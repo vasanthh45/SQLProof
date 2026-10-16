@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "question": "List the first 10 customers ordered by last name and first name.",
+    "ground_truth_sql": "SELECT first_name, last_name FROM customer ORDER BY last_name, first_name LIMIT 10;"
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "question": "List the first 10 inactive customers ordered by last name and first name.",
+    "ground_truth_sql": "SELECT first_name, last_name FROM customer WHERE active = 0 ORDER BY last_name, first_name LIMIT 10;"
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "question": "How many films are in the database?",
+    "ground_truth_sql": "SELECT COUNT(*) AS film_count FROM film;"
+  },
+  {
+    "id": 4,
+    "difficulty": "easy",
+    "question": "How many customers are in the database?",
+    "ground_truth_sql": "SELECT COUNT(*) AS customer_count FROM customer;"
+  },
+  {
+    "id": 5,
+    "difficulty": "easy",
+    "question": "List the first 10 films rated PG by title.",
+    "ground_truth_sql": "SELECT title FROM film WHERE rating = 'PG' ORDER BY title LIMIT 10;"
+  },
+  {
+    "id": 6,
+    "difficulty": "easy",
+    "question": "List the first 10 films with a rental rate of 0.99 by title.",
+    "ground_truth_sql": "SELECT title FROM film WHERE rental_rate = 0.99 ORDER BY title LIMIT 10;"
+  },
+  {
+    "id": 7,
+    "difficulty": "easy",
+    "question": "List the first 10 actors whose last name is Smith.",
+    "ground_truth_sql": "SELECT first_name, last_name FROM actor WHERE last_name = 'SMITH' ORDER BY first_name LIMIT 10;"
+  },
+  {
+    "id": 8,
+    "difficulty": "easy",
+    "question": "How many actors are in the database?",
+    "ground_truth_sql": "SELECT COUNT(*) AS actor_count FROM actor;"
+  },
+  {
+    "id": 9,
+    "difficulty": "easy",
+    "question": "How many customers belong to each store?",
+    "ground_truth_sql": "SELECT store_id, COUNT(*) AS customer_count FROM customer GROUP BY store_id ORDER BY store_id;"
+  },
+  {
+    "id": 10,
+    "difficulty": "easy",
+    "question": "List the 10 largest payments greater than 10 dollars.",
+    "ground_truth_sql": "SELECT payment_id, amount FROM payment WHERE amount > 10 ORDER BY amount DESC, payment_id LIMIT 10;"
+  },
+  {
+    "id": 11,
+    "difficulty": "easy",
+    "question": "How many rentals occurred during 2005?",
+    "ground_truth_sql": "SELECT COUNT(*) AS rental_count FROM rental WHERE rental_date >= '2005-01-01' AND rental_date < '2006-01-01';"
+  },
+  {
+    "id": 12,
+    "difficulty": "easy",
+    "question": "List the first 10 films longer than 120 minutes.",
+    "ground_truth_sql": "SELECT title, length FROM film WHERE length > 120 ORDER BY title LIMIT 10;"
+  },
+  {
+    "id": 13,
+    "difficulty": "easy",
+    "question": "List the staff members' first name, last name, and username.",
+    "ground_truth_sql": "SELECT first_name, last_name, username FROM staff ORDER BY staff_id;"
+  },
+  {
+    "id": 14,
+    "difficulty": "easy",
+    "question": "List all language names alphabetically.",
+    "ground_truth_sql": "SELECT name FROM language ORDER BY name;"
+  },
+  {
+    "id": 15,
+    "difficulty": "easy",
+    "question": "How many customers have no email address?",
+    "ground_truth_sql": "SELECT COUNT(*) AS customers_without_email FROM customer WHERE email IS NULL;"
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "question": "Show each customer and their total payments, including customers who have made no payments.",
+    "ground_truth_sql": "SELECT c.customer_id, c.first_name, c.last_name, COALESCE(SUM(p.amount), 0) AS total_payments FROM customer c LEFT JOIN payment p ON p.customer_id = c.customer_id GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY c.customer_id;"
+  },
+  {
+    "id": 17,
+    "difficulty": "medium",
+    "question": "Show the five customers who have paid the most in total.",
+    "ground_truth_sql": "SELECT c.customer_id, c.first_name, c.last_name, SUM(p.amount) AS total_payments FROM customer c JOIN payment p ON p.customer_id = c.customer_id GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY total_payments DESC, c.customer_id LIMIT 5;"
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "question": "Count how many films belong to each category, including categories with no films.",
+    "ground_truth_sql": "SELECT c.name AS category, COUNT(fc.film_id) AS film_count FROM category c LEFT JOIN film_category fc ON fc.category_id = c.category_id GROUP BY c.category_id, c.name ORDER BY c.name;"
+  },
+  {
+    "id": 19,
+    "difficulty": "medium",
+    "question": "Show the ten most-rented films and their rental counts.",
+    "ground_truth_sql": "SELECT f.film_id, f.title, COUNT(r.rental_id) AS rental_count FROM film f JOIN inventory i ON i.film_id = f.film_id JOIN rental r ON r.inventory_id = i.inventory_id GROUP BY f.film_id, f.title ORDER BY rental_count DESC, f.film_id LIMIT 10;"
+  },
+  {
+    "id": 20,
+    "difficulty": "medium",
+    "question": "Find the average film length for each rating.",
+    "ground_truth_sql": "SELECT rating, AVG(length) AS average_length FROM film GROUP BY rating ORDER BY rating;"
+  },
+  {
+    "id": 21,
+    "difficulty": "medium",
+    "question": "List customers who have made at least 30 rentals.",
+    "ground_truth_sql": "SELECT c.customer_id, c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON r.customer_id = c.customer_id GROUP BY c.customer_id, c.first_name, c.last_name HAVING COUNT(r.rental_id) >= 30 ORDER BY rental_count DESC, c.customer_id;"
+  },
+  {
+    "id": 22,
+    "difficulty": "medium",
+    "question": "Show monthly payment revenue during 2005.",
+    "ground_truth_sql": "SELECT DATE_FORMAT(payment_date, '%Y-%m') AS payment_month, SUM(amount) AS revenue FROM payment WHERE payment_date >= '2005-01-01' AND payment_date < '2006-01-01' GROUP BY DATE_FORMAT(payment_date, '%Y-%m') ORDER BY payment_month;"
+  },
+  {
+    "id": 23,
+    "difficulty": "medium",
+    "question": "List actors who appeared in at least 20 films.",
+    "ground_truth_sql": "SELECT a.actor_id, a.first_name, a.last_name, COUNT(fa.film_id) AS film_count FROM actor a JOIN film_actor fa ON fa.actor_id = a.actor_id GROUP BY a.actor_id, a.first_name, a.last_name HAVING COUNT(fa.film_id) >= 20 ORDER BY film_count DESC, a.actor_id;"
+  },
+  {
+    "id": 24,
+    "difficulty": "medium",
+    "question": "Show total payment amount handled by each staff member, including staff with no payments.",
+    "ground_truth_sql": "SELECT s.staff_id, s.first_name, s.last_name, COALESCE(SUM(p.amount), 0) AS total_payments FROM staff s LEFT JOIN payment p ON p.staff_id = s.staff_id GROUP BY s.staff_id, s.first_name, s.last_name ORDER BY s.staff_id;"
+  },
+  {
+    "id": 25,
+    "difficulty": "medium",
+    "question": "List films whose replacement cost is greater than the average replacement cost of all films.",
+    "ground_truth_sql": "SELECT film_id, title, replacement_cost FROM film WHERE replacement_cost > (SELECT AVG(replacement_cost) FROM film) ORDER BY replacement_cost DESC, title;"
+  },
+  {
+    "id": 26,
+    "difficulty": "medium",
+    "question": "Count the cities in each country.",
+    "ground_truth_sql": "SELECT co.country, COUNT(ci.city_id) AS city_count FROM country co LEFT JOIN city ci ON ci.country_id = co.country_id GROUP BY co.country_id, co.country ORDER BY co.country;"
+  },
+  {
+    "id": 27,
+    "difficulty": "medium",
+    "question": "List films that have never been rented.",
+    "ground_truth_sql": "SELECT f.film_id, f.title FROM film f WHERE NOT EXISTS (SELECT 1 FROM inventory i JOIN rental r ON r.inventory_id = i.inventory_id WHERE i.film_id = f.film_id) ORDER BY f.title;"
+  },
+  {
+    "id": 28,
+    "difficulty": "medium",
+    "question": "Show the five categories with the highest total payment revenue.",
+    "ground_truth_sql": "SELECT c.name AS category, SUM(p.amount) AS revenue FROM category c JOIN film_category fc ON fc.category_id = c.category_id JOIN inventory i ON i.film_id = fc.film_id JOIN rental r ON r.inventory_id = i.inventory_id JOIN payment p ON p.rental_id = r.rental_id GROUP BY c.category_id, c.name ORDER BY revenue DESC, c.name LIMIT 5;"
+  },
+  {
+    "id": 29,
+    "difficulty": "medium",
+    "question": "Show each customer’s average payment and number of payments.",
+    "ground_truth_sql": "SELECT c.customer_id, c.first_name, c.last_name, AVG(p.amount) AS average_payment, COUNT(p.payment_id) AS payment_count FROM customer c LEFT JOIN payment p ON p.customer_id = c.customer_id GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY c.customer_id;"
+  },
+  {
+    "id": 30,
+    "difficulty": "medium",
+    "question": "List films featuring actor Penelope Guiness.",
+    "ground_truth_sql": "SELECT f.title FROM film f JOIN film_actor fa ON fa.film_id = f.film_id JOIN actor a ON a.actor_id = fa.actor_id WHERE a.first_name = 'PENELOPE' AND a.last_name = 'GUINESS' ORDER BY f.title;"
+  },
+  {
+    "id": 31,
+    "difficulty": "tricky",
+    "question": "Find customers whose total payments are greater than the average total payments per customer, counting customers with no payments as zero.",
+    "ground_truth_sql": "WITH customer_totals AS (SELECT c.customer_id, COALESCE(SUM(p.amount), 0) AS total_amount FROM customer c LEFT JOIN payment p ON p.customer_id = c.customer_id GROUP BY c.customer_id) SELECT customer_id, total_amount FROM customer_totals WHERE total_amount > (SELECT AVG(total_amount) FROM customer_totals) ORDER BY total_amount DESC, customer_id;"
+  },
+  {
+    "id": 32,
+    "difficulty": "tricky",
+    "question": "List films that have been rented from every store.",
+    "ground_truth_sql": "SELECT f.film_id, f.title FROM film f JOIN inventory i ON i.film_id = f.film_id JOIN rental r ON r.inventory_id = i.inventory_id GROUP BY f.film_id, f.title HAVING COUNT(DISTINCT i.store_id) = (SELECT COUNT(*) FROM store) ORDER BY f.title;"
+  },
+  {
+    "id": 33,
+    "difficulty": "tricky",
+    "question": "List customers who made payments on at least two distinct dates.",
+    "ground_truth_sql": "SELECT customer_id, COUNT(DISTINCT DATE(payment_date)) AS payment_dates FROM payment GROUP BY customer_id HAVING COUNT(DISTINCT DATE(payment_date)) >= 2 ORDER BY customer_id;"
+  },
+  {
+    "id": 34,
+    "difficulty": "tricky",
+    "question": "List all films tied for the maximum film length.",
+    "ground_truth_sql": "SELECT title, length FROM film WHERE length = (SELECT MAX(length) FROM film) ORDER BY title;"
+  },
+  {
+    "id": 35,
+    "difficulty": "tricky",
+    "question": "List customers who have rented films but have never made a payment.",
+    "ground_truth_sql": "SELECT DISTINCT c.customer_id, c.first_name, c.last_name FROM customer c JOIN rental r ON r.customer_id = c.customer_id WHERE NOT EXISTS (SELECT 1 FROM payment p WHERE p.customer_id = c.customer_id) ORDER BY c.customer_id;"
+  },
+  {
+    "id": 36,
+    "difficulty": "tricky",
+    "question": "List films whose rental count is greater than the average rental count among films that have been rented at least once.",
+    "ground_truth_sql": "WITH film_rentals AS (SELECT i.film_id, COUNT(r.rental_id) AS rental_count FROM inventory i JOIN rental r ON r.inventory_id = i.inventory_id GROUP BY i.film_id) SELECT f.film_id, f.title, fr.rental_count FROM film_rentals fr JOIN film f ON f.film_id = fr.film_id WHERE fr.rental_count > (SELECT AVG(rental_count) FROM film_rentals) ORDER BY fr.rental_count DESC, f.title;"
+  },
+  {
+    "id": 37,
+    "difficulty": "tricky",
+    "question": "For each customer who has rented at least once, show their most recent rental date.",
+    "ground_truth_sql": "SELECT c.customer_id, c.first_name, c.last_name, MAX(r.rental_date) AS most_recent_rental FROM customer c JOIN rental r ON r.customer_id = c.customer_id GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY c.customer_id;"
+  },
+  {
+    "id": 38,
+    "difficulty": "tricky",
+    "question": "List pairs of different customers who share the same last name.",
+    "ground_truth_sql": "SELECT c1.customer_id AS customer_id_1, c1.first_name AS first_name_1, c1.last_name, c2.customer_id AS customer_id_2, c2.first_name AS first_name_2 FROM customer c1 JOIN customer c2 ON c1.last_name = c2.last_name AND c1.customer_id < c2.customer_id ORDER BY c1.last_name, c1.customer_id, c2.customer_id;"
+  },
+  {
+    "id": 39,
+    "difficulty": "tricky",
+    "question": "Find the largest individual payment associated with each film category.",
+    "ground_truth_sql": "SELECT c.name AS category, MAX(p.amount) AS max_payment FROM category c JOIN film_category fc ON fc.category_id = c.category_id JOIN inventory i ON i.film_id = fc.film_id JOIN rental r ON r.inventory_id = i.inventory_id JOIN payment p ON p.rental_id = r.rental_id GROUP BY c.category_id, c.name ORDER BY c.name;"
+  },
+  {
+    "id": 40,
+    "difficulty": "tricky",
+    "question": "List customers whose first payment occurred during 2005.",
+    "ground_truth_sql": "SELECT p.customer_id, MIN(p.payment_date) AS first_payment_date FROM payment p GROUP BY p.customer_id HAVING MIN(p.payment_date) >= '2005-01-01' AND MIN(p.payment_date) < '2006-01-01' ORDER BY p.customer_id;"
+  }
+]
